@@ -1,0 +1,20 @@
+import numpy as np
+import pandas as pd
+from pandas import Series,DataFrame
+data= pd.read_csv(r'F:\exs\movies.csv')
+from pandas.plotting import scatter_matrix
+scatter_matrix(data[['year', 'length', 'budget', 'rating', 'votes']],alpha=0.2,figsize =(9,6),diagonal = 'kde')
+#s代表大小，用投票数确定，可视为置信度
+fig,axes = plt.subplots(nrows=3,ncols=2,figsize=(15,15))
+row=0
+col=0
+for index,genre in data.groupby('genre'):
+    if row >2:
+        row=0
+        col+=1
+    genre.groupby('genre').plot(ax=axes[row,col],kind='scatter',
+                 x='length',y='rating',s=np.sqrt(genre['votes']),
+                 c=genre['gen_col'],xlim=(0,120),ylim=(0,10),
+                 alpha=0.5,label=index)
+    
+    row+=1
