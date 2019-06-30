@@ -1,0 +1,21 @@
+import numpy as np
+import pandas as pd
+from pandas import Series,DataFrame
+import matplotlib.pyplot as plt
+
+data= pd.read_csv('movies.csv')
+
+data.year.value_counts().sort_index(ascending=False)
+data[(data.year>1999)&(data.mpaa == 'R')].head()
+data['genre'] = data[['Action', 'Animation', 'Comedy', 'Drama', 'Documentary', 'Romance']].idxmax(1)
+gmap = {'Action':'red', 'Animation':'blue', 'Comedy':'green', 'Drama':'yellow', 'Documentary':'white', 'Romance':'purple'}
+data['gen_col']=data['genre'].apply(lambda x: gmap[x])
+data['gen_col'].head()
+data['length'].plot()
+plot1 = data.groupby('genre').length.plot(kind = 'kde',xlim = (0,120),legend = 'genre')
+plot1[0].set_xlabel('minutes')
+plot1[0].set_title('length distribution')
+tab1 = pd.pivot_table(data,values = 'rating',index = 'title',columns = ['genre'],aggfunc = np.mean)
+plot2 = tab1.plot(kind = 'box',ylim = (0,10))
+plot2.set_ylabel('rating')
+plot2.set_title('rating distribution')
